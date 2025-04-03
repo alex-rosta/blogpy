@@ -16,6 +16,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv('secret_key')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ALLOWED_EXTENSIONS'] = {'md'}
+app.config.from_object(__name__)
 
 flatpages = FlatPages(app)
 freezer = Freezer(app)
@@ -24,7 +25,7 @@ load_dotenv()
 
 # Configure OAuth
 oauth = OAuth(app)
-github = oauth.register(
+oidcserver = oauth.register(
     name= os.getenv('name'),
     client_id=os.getenv('client_id'),
     client_secret=os.getenv('client_secret'),
@@ -45,12 +46,12 @@ def index():
 @app.route('/login')
 def login():
     redirect_uri = url_for('authorize', _external=True)
-    return github.authorize_redirect(redirect_uri)
+    return oidcserver.authorize_redirect(redirect_uri)
 
 @app.route('/authorize')
 def authorize():
-    token = github.authorize_access_token()
-    user = github.get('user').json()
+    token = oidcserver.authorize_access_token()
+    user = oidcserver.get('user').json()
     session['user'] = user
     return redirect(url_for('index'))
 
@@ -81,7 +82,7 @@ def uploads():
 @app.route('/posts/')
 def posts():
     posts = [p for p in flatpages if p.path.startswith(POST_DIR)]
-    posts.sort(key=lambda item: item['date'], reverse=False)
+    posts.sort(key=lambda item:item['date'], reverse=False)
     return render_template('posts.html', posts=posts)
 
 @app.route('/posts/<name>/')

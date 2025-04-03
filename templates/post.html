@@ -1,3 +1,5 @@
-{{ post.html|safe }}
-{{ post.title }}
-{{ post.date }}
+<!doctype html>
+    <title>{{ post.title }}</title>
+    <h1>{{ post.title }}</h1>
+    <h2>{{ post.date }}</h2>
+    <body>{{ post.html|safe }}</body>
