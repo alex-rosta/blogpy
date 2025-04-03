@@ -88,6 +88,22 @@ def uploads():
             return f"File uploaded successfully. View: <a href='/posts/{filename.rsplit('.', 1)[0]}/'>{filename}</a>", 200
     return render_template('uploads.html')
 
+@app.route('/delete/<name>', methods=['GET'])
+def delete(name):
+    user = session.get('user')
+    if not user:
+        return redirect(url_for('login'))
+    if user['login'] != os.getenv('allowed_user'):
+        return redirect(url_for('login')), session.pop('user', None)
+    if request.method == 'GET':
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], name)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            return redirect(url_for('index'))
+        else:
+            return "File not found", 404
+    
+
 @app.route('/posts/')
 def posts():
     posts = [p for p in flatpages if p.path.startswith(POST_DIR)]
