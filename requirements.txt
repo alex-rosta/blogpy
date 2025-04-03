@@ -1,0 +1,5 @@
+Flask==3.0.3
+Flask-FlatPages==0.8.2
+Frozen-Flask==1.0.2
+Markdown==3.6
+Pygments==2.17.2
