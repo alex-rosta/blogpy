@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from authlib.integrations.flask_client import OAuth
 import os
+import datetime
 from flask_flatpages import FlatPages
 from flask_frozen import Freezer
 from dotenv import load_dotenv
@@ -40,9 +41,14 @@ oidcserver = oauth.register(
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
+def get_recent_posts():
+    recentposts = [p for p in flatpages if p.path.startswith(POST_DIR)]
+    recentposts.sort(key=lambda item:item['date'], reverse=False)
+    return recentposts[:5]
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', recentposts=get_recent_posts())
 
 @app.route('/login')
 def login():
@@ -51,6 +57,7 @@ def login():
 
 @app.route('/authorize')
 def authorize():
+    token = oidcserver.authorize_access_token()
     user = oidcserver.get('user').json()
     session['user'] = user
     return redirect(url_for('index'))
@@ -65,7 +72,7 @@ def uploads():
     user = session.get('user')
     if not user:
         return redirect(url_for('login'))
-    if user.get('login') != os.getenv('allowed_user'):
+    if user['login'] != os.getenv('allowed_user'):
         return redirect(url_for('login')), session.pop('user', None)
     if request.method == 'POST':
         if 'file' not in request.files:

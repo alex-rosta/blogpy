@@ -1,6 +1,33 @@
-{% for post in posts %}
-    <a href="{{ url_for('post', name=post.path.replace('posts/', '')) }}">
-        {{ post.title }}
-    </a>
-    <small>{{ post.date }}</small>
-{% endfor %}
+{% extends "layout.html" %}
+
+{% block title %}My Blog - All Posts{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto animate-slide-in">
+    <h1 class="text-4xl font-bold mb-8 text-primary-600 dark:text-primary-400">All Posts</h1>
+    
+    <div class="space-y-6">
+        {% for post in posts %}
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                <a href="{{ url_for('post', name=post.path.replace('posts/', '')) }}" class="block p-6">
+                    <h2 class="text-xl font-bold mb-2 text-primary-700 dark:text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors">
+                        {{ post.title }}
+                    </h2>
+                    <div class="flex items-center text-gray-600 dark:text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span class="text-sm">{{ post.date }}</span>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+        
+        {% if not posts %}
+            <div class="text-center py-10 text-gray-600 dark:text-gray-400">
+                <p>No posts found.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

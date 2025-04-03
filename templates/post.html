@@ -1,5 +1,30 @@
-<!doctype html>
-    <title>{{ post.title }}</title>
-    <h1>{{ post.title }}</h1>
-    <h2>{{ post.date }}</h2>
-    <body>{{ post.html|safe }}</body>
+{% extends "layout.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<article class="max-w-4xl mx-auto animate-slide-in">
+    <header class="mb-8 border-b border-gray-200 dark:border-gray-700 pb-6">
+        <h1 class="text-4xl font-bold mb-4 text-primary-700 dark:text-primary-400">{{ post.title }}</h1>
+        <div class="flex items-center text-gray-600 dark:text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>{{ post.date }}</span>
+        </div>
+    </header>
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8 prose dark:prose-invert">
+        {{ post.html|safe }}
+    </div>
+    
+    <div class="flex justify-between items-center mt-10">
+        <a href="/posts/" class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Posts
+        </a>
+    </div>
+</article>
+{% endblock %}

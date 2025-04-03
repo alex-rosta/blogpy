@@ -1,7 +1,53 @@
-<!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
+{% extends "layout.html" %}
+
+{% block title %}Upload New Post{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto animate-slide-in">
+    <h1 class="text-4xl font-bold mb-8 text-primary-600 dark:text-primary-400">Upload New Post</h1>
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 mb-8">
+        <p class="mb-6 text-gray-700 dark:text-gray-300">Upload a new Markdown (.md) file to publish a new blog post.</p>
+        
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            <div class="flex flex-col space-y-2">
+                <label for="file-upload" class="text-gray-700 dark:text-gray-300 font-medium">Select File</label>
+                <div class="flex items-center space-x-4">
+                    <label class="cursor-pointer bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 px-4 py-2 rounded border border-gray-300 dark:border-gray-600 transition-colors">
+                        <span class="text-gray-700 dark:text-gray-300">Browse</span>
+                        <input id="file-upload" type="file" name="file" class="hidden">
+                    </label>
+                    <span id="file-name" class="text-gray-600 dark:text-gray-400 text-sm">No file selected</span>
+                </div>
+            </div>
+            
+            <div>
+                <button type="submit" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded shadow-md hover:shadow-lg transition-all">
+                    Upload Post
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold mb-4 text-primary-700 dark:text-primary-400">File Requirements</h2>
+        <ul class="list-disc pl-6 text-gray-700 dark:text-gray-300 space-y-2">
+            <li>Files must be in Markdown format (.md extension)</li>
+            <li>Include a title and date in the front matter</li>
+            <li>Example front matter:
+                <pre class="bg-gray-100 dark:bg-gray-700 p-3 rounded mt-2 text-sm overflow-x-auto">
+title: Your Post Title
+date: 2025-04-03
+                </pre>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    document.getElementById('file-upload').addEventListener('change', function(e) {
+        const fileName = e.target.files[0]?.name || 'No file selected';
+        document.getElementById('file-name').textContent = fileName;
+    });
+</script>
+{% endblock %}
