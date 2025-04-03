@@ -11,6 +11,7 @@ FLATPAGES_EXTENSION = '.md'
 FLATPAGES_ROOT = 'content'
 POST_DIR = 'posts'
 UPLOAD_FOLDER = os.path.join(FLATPAGES_ROOT, POST_DIR)
+IMAGE_FOLDER = os.path.join(FLATPAGES_ROOT, 'images')
 
 app = Flask(__name__)
 app.secret_key = os.getenv('secret_key')
@@ -50,7 +51,6 @@ def login():
 
 @app.route('/authorize')
 def authorize():
-    token = oidcserver.authorize_access_token()
     user = oidcserver.get('user').json()
     session['user'] = user
     return redirect(url_for('index'))
@@ -65,7 +65,7 @@ def uploads():
     user = session.get('user')
     if not user:
         return redirect(url_for('login'))
-    if user['login'] != os.getenv('allowed_user'):
+    if user.get('login') != os.getenv('allowed_user'):
         return redirect(url_for('login')), session.pop('user', None)
     if request.method == 'POST':
         if 'file' not in request.files:
@@ -73,10 +73,12 @@ def uploads():
         file = request.files['file']
         if file.filename == '':
             return "No selected file", 400
+        if file.filename in os.listdir(app.config['UPLOAD_FOLDER']) or file.filename in os.listdir(app.config['IMAGE_FOLDER']):
+            return "File already exists", 400
         if file and allowed_file(file.filename):
             filename = file.filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return "File uploaded successfully", 200
+            return f"File uploaded successfully. View: <a href='/posts/{filename.rsplit('.', 1)[0]}/'>{filename}</a>", 200
     return render_template('uploads.html')
 
 @app.route('/posts/')
