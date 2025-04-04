@@ -116,5 +116,16 @@ def post(name):
     post = flatpages.get_or_404(path)
     return render_template('post.html', post=post)
 
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('query', '').strip().lower()
+    if query:
+        posts = [
+            p for p in flatpages if p.path.startswith(POST_DIR) and (query in p.meta['title'].lower() or query in p.body.lower())
+        ]
+        return render_template('search.html', posts=posts, query=query)
+    else:
+        return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=DEBUG)
