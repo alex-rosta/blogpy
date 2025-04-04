@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto animate-slide-in">
+    <h1 class="text-2xl font-bold mb-6 text-primary-700 dark:text-primary-400">Search Results for "{{ query }}"</h1>
+    
+    {% if posts %}
+        <ul class="space-y-4">
+            {% for post in posts %}
+                <li class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 hover:shadow-lg transition-shadow">
+                    <a href="{{ url_for('post', name=post.path.replace('posts/', '')) }}" class="text-lg font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors">
+                        {{ post.meta.title }}
+                    </a>
+                    <p class="text-gray-600 dark:text-gray-400">{{ post.meta.date }} {{ post.meta.description }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-gray-600 dark:text-gray-400">No posts found matching your query.</p>
+    {% endif %}
+</div>
+{% endblock %}
