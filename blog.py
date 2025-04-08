@@ -6,18 +6,19 @@ from flask_flatpages import FlatPages
 from flask_frozen import Freezer
 from dotenv import load_dotenv
 
-DEBUG = True
-FLATPAGES_AUTO_RELOAD = DEBUG
-FLATPAGES_EXTENSION = '.md'
+FLATPAGES_AUTO_RELOAD = True
+FLATPAGES_EXTENSION = '.md,'
 FLATPAGES_ROOT = 'content'
 POST_DIR = 'posts'
+IMAGE_DIR = 'images'
 UPLOAD_FOLDER = os.path.join(FLATPAGES_ROOT, POST_DIR)
-IMAGE_FOLDER = os.path.join(FLATPAGES_ROOT, 'images')
+IMAGE_FOLDER = os.path.join(FLATPAGES_ROOT, IMAGE_DIR)
+DEBUG = True
 
 app = Flask(__name__)
 app.secret_key = os.getenv('secret_key')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['ALLOWED_EXTENSIONS'] = {'md'}
+app.config['ALLOWED_EXTENSIONS'] = ['.md,', '.png', '.jpg', '.jpeg']
 app.config.from_object(__name__)
 
 flatpages = FlatPages(app)
@@ -60,7 +61,10 @@ def authorize():
     token = oidcserver.authorize_access_token()
     user = oidcserver.get('user').json()
     session['user'] = user
-    return redirect(url_for('index'))
+    if user['login'] != os.getenv('allowed_user'):
+        return "Unauthorized user", 403
+    else:
+        return redirect(url_for('index'))
 
 @app.route('/logout')
 def logout():
