@@ -96,6 +96,17 @@ def delete(name):
         else:
             return "File not found", 404
 
+@app.route('/tags/')
+def tags():
+    tags = {}
+    for p in flatpages:
+        if p.path.startswith(POST_DIR):
+            for tag in p.meta['tags']:
+                if tag not in tags:
+                    tags[tag] = []
+                tags[tag].append(p)
+    return render_template('tags.html', tags=tags)
+
 @app.route('/posts/')
 def posts():
     posts = [p for p in flatpages if p.path.startswith(POST_DIR)]

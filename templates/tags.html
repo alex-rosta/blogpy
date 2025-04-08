@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}Tags{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto animate-slide-in">
+    <h1 class="text-4xl font-bold mb-8 text-primary-600 dark:text-primary-400">Tags</h1>
+    
+    {% if tags %}
+        <div class="space-y-6">
+            {% for tag, posts in tags.items() %}
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-700 dark:text-primary-400">{{ tag }}</h2>
+                    <ul class="space-y-2">
+                        {% for post in posts %}
+                            <li>
+                                <a href="{{ url_for('post', name=post.path.replace('posts/', '')) }}" class="text-lg font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors">
+                                    {{ post.meta.title }}
+                                </a>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm">{{ post.meta.date }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-600 dark:text-gray-400">No tags found.</p>
+    {% endif %}
+</div>
+{% endblock %}
